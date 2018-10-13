@@ -1,5 +1,7 @@
 package org.java.bin.sort;
 
+import org.java.bin.datastructure.sort.SortTestHelper;
+
 /**
  * Created by wangbin on 16/12/21.
  */
@@ -91,6 +93,50 @@ public class QuickSort {
     public static void div3DeScanSort(int[] arr, int low, int high) {
         if (low < high) {
             int pivot = arr[low];
+
+            int lt = low, gt = high + 1, i = low + 1;
+            OUT_LOOP:
+            while (i < gt) {
+                System.out.println("i = " + i);
+                if (arr[i] < pivot) {
+                    swap(arr, i, lt + 1);
+                    lt++;
+                    i++;
+                } else if (arr[i] == pivot) {
+                    i++;
+                } else {
+                    while (arr[gt - 1] > pivot) {
+                        gt--;
+                        if (i > gt) {
+                            break OUT_LOOP;
+                        }
+                    }
+
+                    if (arr[gt - 1] < pivot) {
+                        swap(arr, gt - 1, i);
+                        swap(arr, lt + 1, i);
+                        lt++;
+                    } else {
+                        swap(arr, gt - 1, i);
+                    }
+                    i++;
+                    gt--;
+                }
+            }
+            swap(arr, low, lt);
+            div3DeScanSort(arr, low, lt - 1);
+            div3DeScanSort(arr, gt, high);
         }
+    }
+
+    public static void main(String[] args) {
+        Integer[] arr = SortTestHelper.getRandom(10000, 0, 200);
+        int[] copy = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            copy[i] = arr[i];
+        }
+
+        div3DeScanSort(copy, 0, copy.length - 1);
+        System.out.println(SortTestHelper.isSorted(copy));
     }
 }
